@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% include "base/head.html" %}
+    <title>{% block title %}{% endblock %}</title>
+<body>
+    <header>{% include "base/navbar.html" %}</header>
+    <div class="Register">
+        {% block signin %}{% endblock %}
+        {% block signup %}{% endblock %}
+        {% block update %}{% endblock %}
+    </div>
+    <main>
+        <section>
+        {% block home %}{% endblock %}
+        </section>
+        <section>
+        {% block post %}{% endblock %}
+        </section>
+        <section>
+        {% block profile %}{% endblock %}
+        </section>
+	    <section>
+		    {% block show_posts %} {% endblock %}
+	    </section>
+    </main> 
+</body>
+</html>

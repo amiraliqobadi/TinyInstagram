@@ -1,0 +1,10 @@
+asgiref
+Django
+pillow
+sqlparse
+django-crispy-forms
+requests
+django-multiupload
+crispy-tailwind
+django-filter
+six

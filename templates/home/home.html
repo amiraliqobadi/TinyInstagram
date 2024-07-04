@@ -1,0 +1,185 @@
+{% extends "base/base.html" %} {% block title %} instagram {% endblock %}
+<!--hello world-->
+{% block home %}
+
+<div class="bg-gray-100 bg-opacity-25">
+    <div class="lg:w-8/12 lg:mx-auto mb-8">
+        <header class="flex flex-wrap items-center p-4 md:py-8">
+            <div class="md:w-3/12 md:ml-16">
+                <!-- profile image -->
+                <a href="{% url 'profile' %}">    
+                    {% if user.profile_img %}
+                    <img
+                        class="w-20 h-20 md:w-40 md:h-40 object-cover rounded-full border-2 border-pink-600 p-1"
+                        src="{{ profile_img.url }}"
+                        alt=""
+                    />
+                    {% else %}
+                    {% load static %}    
+                    <img
+                        class="w-20 h-20 md:w-40 md:h-40 object-cover rounded-full border-2 border-pink-600 p-1"
+                        src="{% static 'default-avatar.png' %}"
+                        alt=""
+                            />
+                    {% endif %}
+                </a>
+            </div>
+
+            <!-- profile meta -->
+            <div class="w-8/12 md:w-7/12 ml-4">
+                <div class="md:flex md:flex-wrap md:items-center mb-4">
+                    <h2
+                        class="text-3xl inline-block font-light md:mr-2 mb-2 sm:mb-0"
+                    >
+                        {% if user.is_authenticated %} {{ user.user_name }}
+                        {% endif %} {% if not user.is_authenticated %} Login or
+                        Create Account {% endif %}
+                    </h2>
+                </div>
+                <!-- post, following, followers list for medium screens -->
+
+                <ul class="hidden md:flex space-x-8 mb-4">
+                    <li>
+                        <span class="font-semibold">{{ postscounter }}</span>
+                        posts
+                    </li>
+
+                    <li>
+                        <span class="font-semibold">{{ followers }}</span>
+                        followers
+                    </li>
+                    <li>
+                        <span class="font-semibold">{{ following }}</span>
+                        following
+                    </li>
+                </ul>
+                {% if user.username %}
+                <ul class="hidden md:flex space-x-8 mb-4">
+                    <form method="post" class="flex" >
+                        <li>
+                            <button class="me-4 lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200">Follow</button>
+                        </li>
+                            
+                        <li>
+                            <button class="lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200">unfollow</button>
+                        </li>
+                    </form>
+                {% endif %}
+                </ul>
+
+                <!-- user meta form medium screens -->
+                <div class="hidden md:block">
+                    <h1 class="font-semibold">
+                        {{ user.first_name }} {{ user.last_name }}
+                    </h1>
+                    {{ bio }}
+                </div>
+            </div>
+
+            <!-- user meta form small screens -->
+            <div class="md:hidden text-sm my-2">
+                <h1 class="font-semibold">
+                    {{ user.first_name }} {{ user.last_name }}
+                </h1>
+                {{ bio }}
+            </div>
+        </header>
+
+        <!-- posts -->
+        <div class="px-px md:px-3">
+            <!-- user following for mobile only -->
+            <ul
+                class="flex md:hidden justify-around space-x-8 border-t text-center p-2 text-gray-600 leading-snug text-sm"
+            >
+                <li>
+                    <span class="font-semibold text-gray-800 block"
+                        >{{ postscounter }}</span
+                    >
+                    posts
+                </li>
+
+                <li>
+                    <span class="font-semibold text-gray-800 block"
+                        >{{ followers }}</span
+                    >
+                    followers
+                </li>
+                <li>
+                    <span class="font-semibold text-gray-800 block"
+                        >{{ following }}</span
+                    >
+                    following
+                </li>
+            </ul>
+          
+            <ul
+                class="flex items-center justify-around md:justify-center space-x-12 uppercase tracking-widest font-semibold text-xs text-gray-600 border-t"
+            >
+         
+                <li
+                    class="md:border-t md:border-gray-700 md:-mt-px md:text-gray-700"
+                >
+                    <a class="inline-block p-3" href="#">
+                        <span class="hidden md:inline">posts</span>
+                    </a>
+                </li>
+            </ul>
+
+            {% if user.is_authenticated %}
+            <div class="flex flex-wrap">
+                {% for post, images in posts_images.items %}
+                    <div class="w-1/2 p-2 min-h-80">
+                        <div class="flex flex-wrap justify-center">
+                            <div x-data="imageSlider{{ post.id }}" class="relative mx-auto max-w-2xl overflow-hidden rounded-md sm:p-4">
+                               
+                                <div class="absolute right-5 top-10 z-10 rounded-full bg-gray-600 px-2 text-center text-sm text-white">
+                                    <span x-text="currentIndex"></span>/<span x-text="images.length"></span>
+                                </div>
+                                <button @click="previous()" class="absolute left-5 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-gray-100 shadow-md">
+                                    <i class="fas fa-chevron-left text-2xl font-bold text-gray-500"></i>
+                                </button>
+                                <button @click="forward()" class="absolute right-5 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-gray-100 shadow-md">
+                                    <i class="fas fa-chevron-right text-2xl font-bold text-gray-500"></i>
+                                </button>
+                           
+                                <div class="relative h-80" style="width: 30rem">
+                                    <template x-for="(image, index) in images" :key="index">
+                                        <div x-show="currentIndex === index + 1" x-transition:enter="transition transform duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition transform duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute top-0">
+                                            <img :src="'/media/' + image" alt="post_image" class="rounded-sm" />
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                
+                        document.addEventListener("alpine:init", () => {
+                            Alpine.data("imageSlider{{ post.id }}", () => ({
+                                currentIndex: 1,                 
+                                images: [
+                                    {% for image in images %}
+                                        '/{{ image }}',
+                                    {% endfor %}
+                                ],
+                                previous() {
+                                    if (this.currentIndex > 1) {
+                                        this.currentIndex = this.currentIndex - 1;
+                                    }
+                                },
+                                forward() {
+                                    if (this.currentIndex < this.images.length) {
+                                        this.currentIndex = this.currentIndex + 1;
+                                    }
+                                },
+                            }));
+                        })
+                    </script>
+                {% endfor %}
+            </div>
+                     
+        {% else %}
+            <div></div>
+        {% endif %}
+{% endblock %}
+

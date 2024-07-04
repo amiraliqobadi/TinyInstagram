@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% include "base/head.html" %}
+    <title>Create Account</title>
+    <body>
+
+<div class="grid min-h-screen place-items-center bg-white-500 p-16">
+    <div class="w-fit rounded-md bg-white-300 p-4 pt-0 shadow-lg">
+        <section class="pt-16 pb-24">
+            <h2 class="text-3xl font-semibold mb-6">Account Authentication</h2>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+            {% if show_verification_code_input %}
+                <div class="flex flex-col space-y-2">
+                <label for="id_verification_code" class="text-lg">Verification Code:</label>
+                <input type="text" id="id_verification_code" name="verification_code" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+            {% else %}
+                <div class="flex flex-col space-y-2">
+                <label for="id_email" class="text-lg">Email:</label>
+                <input type="email" id="id_email" name="email" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            </div>
+            {% endif %}
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out">Submit</button>
+            </form>
+            </section>
+    </div>
+</div>
+</body>
+</html>

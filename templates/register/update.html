@@ -1,0 +1,45 @@
+{% extends "base/base.html" %}
+{% block title %}
+Update the Informations
+{% endblock  %}
+{% block update %}
+<section class="grid min-h-screen place-items-center bg-white-500 p-16">
+    <div class="w-fit rounded-md bg-white-300 p-4 pt-0 shadow-lg">
+        <div
+            class="flex h-16 items-center justify-between font-bold text-white-950"
+        >
+            <span>Update your informations</span>
+        </div>
+        {% load tailwind_filters %}
+        <form class="grid gap-3" method="post" enctype="multipart/form-data">
+            {% csrf_token %} 
+            {{ form|crispy }}
+            <!-- Sign In Button -->
+            
+            <button
+                class="flex h-10 items-center justify-between rounded-sm bg-white-700 px-2 text-b transition-colors duration-300 hover:bg-white-800 focus:outline-none focus:ring focus:ring-white-400"
+                type="submit"
+            >
+                <span>Update Informations</span>
+                <span>
+                    <!-- SVG: chevron-right -->
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="h-6 w-6"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                        />
+                    </svg>
+                    <!-- SVG: chevron-right -->
+                </span>
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock  %}

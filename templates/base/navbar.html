@@ -1,0 +1,311 @@
+<nav
+    class="relative px-4 py-4 flex justify-between items-center bg-gray-400 rounded-b-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40 sticky top-0"
+>
+    <div class="h-11 text-3xl leading-none">
+        <div class="relative block">
+            <form method="get" action="{% url 'home' %}" role="form" class="flex rounded-full mt-2 relative">
+                <div>                   
+                    <input 
+                        class="text-sm p-2 rounded-full flex-1 text-gray-700 focus:outline-none bg-gray-200 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 border border-gray-100"
+                        type="text" name="user_name" id="id_user_name"
+                        placeholder="enter username"
+
+                    >    
+                </div>
+                <ul id="searchshower" class="rounde-lg p-1 block top-6 w-max left-0 absolute text-base z-50 list-none divide-y rounded shadow my-4 bg-gray-400 rounded-b-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40">
+                    {% for user in filter.qs %}
+                        <div id="user-{{ user.id }}" class="flex p-1">
+                            <a href="{% url 'show_posts' pk=user.id %}">
+                                <p class="pe-20 me-20">{{ user.user_name }}</p>
+                            </a>>
+                            <button class="fixed me-1 right-0 follow-btn py-1 px-3 bg-gray-500 hover:bg-gray-600 text-sm text-white font-bold rounded-full transition duration-200" data-id="{{ user.id }}" data-action="{% if request.user not in user.followers.all %}follow{% else %}unfollow{% endif %}">
+                            {% if request.user not in user.followers.all %}Follow{% else %}Unfollow{% endif %}
+                            </button>
+                        </div>
+                    {% endfor %}
+                </ul>
+                <button
+                    id="searchbtn" type="submit" class="right-10 relative lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-full transition duration-200"
+                >  
+                    Search
+                </button>          
+            </form>
+            
+            <div>
+        </div>
+    </div>
+    <div class="lg:hidden">
+        <button class="fixed top-5 right-5 navbar-burger flex items-center text-blue-600 p-3">
+            <svg
+                class="block h-4 w-4 fill-current"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <title>Mobile menu</title>
+                <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+            </svg>
+        </button>
+    </div>
+    <ul
+        class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6"
+    >
+        <li>
+            <a
+                class="text-sm text-gray-400 hover:text-gray-500"
+                href="{% url 'home' %}"
+                >Home</a
+            >
+        </li>
+
+        <li class="text-gray-300 relative">
+            <div class="text-gray-300 mx-6">
+                <div
+                    class="w-max hidden text-base z-50 list-none divide-y rounded shadow my-4 bg-gray-400 rounded-b-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40"
+                    id="dropdown"
+                >
+                    <ul class="py-1 w-fit " aria-labelledby="dropdown">
+                        {% if messages %} 
+                        {% for message in messages %}
+                        <li
+                            class="w-fit text-gray-800 p-4 alert alert-{{ message.tags }}"
+                        >
+                            {{ message }}
+                        </li>
+                        {% endfor %} {% else %}
+                        <li
+                            class="w-fit text-gray-800 p-4 alert alert-{{ message.tags }}"
+                        >
+                            Not new messege
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <button
+                    class="text-sm text-gray-400 hover:text-gray-500"
+                    type="button"
+                    data-dropdown-toggle="dropdown"
+                >
+                    {% if messages|length != 0 %}
+                    <div id="my_messeges">
+                        Messege
+                        <span class="text-red-400" id="message_counter">
+                            {{ messages|length }}
+                        </span>
+                    </div>
+                    {% else %}
+                    <div>Messege</div>
+                    {% endif %}
+                </button>
+            </div>
+
+            <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+        </li>
+        <li>
+            <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
+                >Explore</a
+            >
+        </li>
+        <li class="text-gray-300"></li>
+        <li>
+            <a class="text-sm text-gray-400 hover:text-gray-500" href="#"
+                >Followers</a
+            >
+        </li>
+        <li class="text-gray-300"></li>
+        <li>
+            <a
+                class="text-sm text-gray-400 hover:text-gray-500"
+                href="{% url 'createpost' %}"
+                >Create Post</a
+            >
+        </li>
+            </ul>
+            {% if not user.is_authenticated %}
+            <a
+                class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-xl transition duration-200"
+                href="{% url 'signin' %}"
+                >Sign In</a
+            >
+
+            <a
+                class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
+                href="{% url 'signup' %}"
+                >Sign up</a
+            >
+            {% endif %} {% if user.is_authenticated %}
+            <a
+                id="logout-link"
+                class="absolute right-5 top-5 hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-full transition duration-200"
+                href="{% url 'logout' %}"
+                >Log out</a
+            >
+            {% endif %}
+</nav>
+<div class="navbar-menu z-50 hidden">
+    <div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
+    <nav
+        class="fixed top-0 left-0 bottom-10 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto bg-gray-400 rounded-b-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-80"
+    >
+        
+        <div>
+            <ul>
+                <li class="mb-1">
+                    <a
+                        class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href="{% url 'home' %}"
+                        >Home</a
+                    >
+                </li>
+
+                <li class="mb-1">
+                    <a
+                        class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href="#"
+                        >Explore</a
+                    >
+                </li>
+                <li class="mb-1">
+                    <a
+                        class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href="#"
+                        >Followers</a
+                    >
+                </li>
+                <li class="mb-1">
+                    <a
+                        class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href="{% url 'createpost' %}"
+                        >Create Post</a
+                    >
+                </li>
+            </ul>
+        </div>
+        <div class=" mt-auto">
+            <div class="pt-6 ">
+                {% if not user.is_authenticated %}
+                <a
+                    class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
+                    href="{% url 'signin' %}"
+                    >Sign in</a
+                >
+
+                <a
+                    class="block px-2 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-xl"
+                    href="{% url 'signin' %}"
+                    >Sign Up</a
+                >
+                {% endif %} {% if user.is_authenticated %}
+                <a
+                    id="logout-link"
+                    class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-xl"
+                    href="{% url 'logout' %}"
+                    >Log out</a
+                >
+                {% endif %}
+            </div>
+            <p class="my-4 text-xs text-center text-gray-400">
+                <span>Copyright © AmirAli Qobadi</span>
+            </p>
+        </div>
+    </nav>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    
+        $(document).ready(function() {
+            $('.follow-btn').click(function(e) {
+                e.preventDefault();
+                const userId = $(this).data('id');
+                const action = $(this).data('action');
+                const btn = $(this);
+                $.ajax({
+                    url: action === 'follow' ? '/follow/' + userId + '/' : '/unfollow/' + userId + '/',
+                    type: 'post',
+                    data: { csrfmiddlewaretoken: csrftoken },
+                    success: function(response) {
+                        if(response.status == 'success') {
+                            btn.text(action === 'follow' ? 'Unfollow' : 'Follow');
+                            btn.data('action', action === 'follow' ? 'unfollow' : 'follow');
+                        }
+                    }
+                });
+            });
+        });
+    
+    </script>
+
+<script>
+    const my_messeges = document.getElementById("my_messeges");
+    const message_counter = document.getElementById("message_counter");
+    if(my_messeges != null){my_messeges.addEventListener("click", () => {
+        message_counter.style.display = "None";
+    });}
+    
+</script>
+
+<script>
+    // Burger menus
+    document.addEventListener("DOMContentLoaded", function () {
+        // open
+        const burger = document.querySelectorAll(".navbar-burger");
+        const menu = document.querySelectorAll(".navbar-menu");
+
+        if (burger.length && menu.length) {
+            for (var i = 0; i < burger.length; i++) {
+                burger[i].addEventListener("click", function () {
+                    for (var j = 0; j < menu.length; j++) {
+                        menu[j].classList.toggle("hidden");
+                    }
+                });
+            }
+        }
+
+        // close
+        const close = document.querySelectorAll(".navbar-close");
+        const backdrop = document.querySelectorAll(".navbar-backdrop");
+
+        if (close.length) {
+            for (var i = 0; i < close.length; i++) {
+                close[i].addEventListener("click", function () {
+                    for (var j = 0; j < menu.length; j++) {
+                        menu[j].classList.toggle("hidden");
+                    }
+                });
+            }
+        }
+
+        if (backdrop.length) {
+            for (var i = 0; i < backdrop.length; i++) {
+                backdrop[i].addEventListener("click", function () {
+                    for (var j = 0; j < menu.length; j++) {
+                        menu[j].classList.toggle("hidden");
+                    }
+                });
+            }
+        }
+    });
+    $(document).ready(function() {
+        $('#logout-link').click(function(e) {
+            e.preventDefault();
+            var form = $(' <form method="post" action="{% url 'logout' %}"></form>');
+            form.append('{% csrf_token %}');
+            form.appendTo('body').submit();
+        });
+    });
+</script>
